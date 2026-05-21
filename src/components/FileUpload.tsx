@@ -1,12 +1,15 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Upload, FileAudio, FileVideo, AlertCircle, CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Upload, FileAudio, FileVideo, X, CheckCircle } from 'lucide-react';
 import { isValidFileType, formatFileSize, MAX_FILE_SIZE } from '@/lib/utils';
 
 interface FileUploadProps {
   onFileSelect: (file: File) => void;
 }
+
+const ACCEPTED_FORMATS = ['MP4', 'MP3', 'WAV', 'MOV', 'M4A'];
 
 export default function FileUpload({ onFileSelect }: FileUploadProps) {
   const [dragActive, setDragActive] = useState(false);
@@ -57,103 +60,142 @@ export default function FileUpload({ onFileSelect }: FileUploadProps) {
     }
   };
 
+  const handleRemove = () => {
+    setSelectedFile(null);
+    setError(null);
+  };
+
   const getFileIcon = (filename: string) => {
     const ext = filename.split('.').pop()?.toLowerCase();
     if (['mp3', 'wav', 'm4a'].includes(ext || '')) {
-      return <FileAudio className="w-8 h-8 text-[#E94560]" />;
+      return <FileAudio className="w-6 h-6 text-[var(--accent-primary)]" />;
     }
-    return <FileVideo className="w-8 h-8 text-[#E94560]" />;
+    return <FileVideo className="w-6 h-6 text-[var(--accent-primary)]" />;
   };
 
   return (
     <div className="w-full">
-      {!selectedFile ? (
-        <div
-          className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${
-            dragActive
-              ? 'border-[#E94560] bg-[#E94560]/10'
-              : 'border-[#2A2A3E] hover:border-[#E94560]/50 hover:bg-[#12121A]'
-          }`}
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        >
-          <input
-            type="file"
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            accept=".mp4,.mp3,.wav,.mov,.m4a"
-            onChange={handleChange}
-          />
-
-          <div className="flex flex-col items-center gap-4">
-            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all ${
-              dragActive ? 'bg-[#E94560]/20 scale-110' : 'bg-[#1A1A2E]'
-            }`}>
-              <Upload className={`w-8 h-8 ${dragActive ? 'text-[#E94560]' : 'text-[#A0A0B0]'}`} />
-            </div>
-
-            <div>
-              <p className="text-white font-medium mb-1">
-                {dragActive ? 'Drop your file here' : 'Drag & drop your audio/video'}
-              </p>
-              <p className="text-[#A0A0B0] text-sm">
-                or click to browse
-              </p>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-2 mt-2">
-              {['MP4', 'MP3', 'WAV', 'MOV', 'M4A'].map((format) => (
-                <span
-                  key={format}
-                  className="px-2 py-1 text-xs rounded-lg bg-[#1A1A2E] text-[#A0A0B0]"
-                >
-                  {format}
-                </span>
-              ))}
-            </div>
-
-            <p className="text-xs text-[#A0A0B0] mt-2">
-              Maximum file size: 500MB
-            </p>
-          </div>
-        </div>
-      ) : (
-        <div className="card p-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-xl bg-[#1A1A2E] flex items-center justify-center">
-              {getFileIcon(selectedFile.name)}
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <p className="text-white font-medium truncate">{selectedFile.name}</p>
-              <p className="text-[#A0A0B0] text-sm">{formatFileSize(selectedFile.size)}</p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-[#00D9A5]" />
-              <span className="text-[#00D9A5] text-sm font-medium">Ready</span>
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              setSelectedFile(null);
-              setError(null);
-            }}
-            className="mt-4 text-sm text-[#A0A0B0] hover:text-white transition-colors"
+      <AnimatePresence mode="wait">
+        {!selectedFile ? (
+          <motion.div
+            key="upload"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-200 cursor-pointer group ${
+              dragActive
+                ? 'border-[var(--accent-primary)] bg-[var(--accent-light)] scale-[1.02]'
+                : 'border-[var(--border-medium)] hover:border-[var(--accent-primary)]/50 bg-[var(--bg-secondary)]/50'
+            }`}
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
           >
-            Remove file
-          </button>
-        </div>
-      )}
+            <input
+              type="file"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              accept=".mp4,.mp3,.wav,.mov,.m4a"
+              onChange={handleChange}
+            />
 
-      {error && (
-        <div className="mt-4 p-4 rounded-xl bg-[#E94560]/10 border border-[#E94560]/30 flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 text-[#E94560] flex-shrink-0" />
-          <p className="text-[#E94560] text-sm">{error}</p>
-        </div>
-      )}
+            <div className="flex flex-col items-center gap-4">
+              <motion.div
+                className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-200 ${
+                  dragActive
+                    ? 'bg-[var(--accent-primary)]/10 scale-110'
+                    : 'bg-[var(--bg-tertiary)] group-hover:bg-[var(--accent-light)]'
+                }`}
+                animate={dragActive ? { scale: 1.1 } : { scale: 1 }}
+              >
+                <Upload
+                  className={`w-7 h-7 transition-colors duration-200 ${
+                    dragActive
+                      ? 'text-[var(--accent-primary)]'
+                      : 'text-[var(--text-muted)] group-hover:text-[var(--accent-primary)]'
+                  }`}
+                />
+              </motion.div>
+
+              <div>
+                <p className="text-[var(--text-primary)] font-medium mb-1">
+                  {dragActive ? 'Drop your file here' : 'Drag and drop your file'}
+                </p>
+                <p className="text-[var(--text-tertiary)] text-sm">
+                  or click to browse from your device
+                </p>
+              </div>
+
+              <div className="flex flex-wrap justify-center gap-2 mt-2">
+                {ACCEPTED_FORMATS.map((format) => (
+                  <span
+                    key={format}
+                    className="px-3 py-1.5 text-xs font-medium rounded-lg bg-[var(--bg-card)] border border-[var(--border-light)] text-[var(--text-tertiary)]"
+                  >
+                    {format}
+                  </span>
+                ))}
+              </div>
+
+              <p className="text-xs text-[var(--text-muted)]">
+                Maximum file size: 500MB
+              </p>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="selected"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-light)]"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-xl bg-[var(--accent-light)] flex items-center justify-center flex-shrink-0">
+                {getFileIcon(selectedFile.name)}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <p className="text-[var(--text-primary)] font-medium truncate">
+                  {selectedFile.name}
+                </p>
+                <p className="text-[var(--text-tertiary)] text-sm">
+                  {formatFileSize(selectedFile.size)}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--success-bg)]">
+                <CheckCircle className="w-4 h-4 text-[var(--success)]" />
+                <span className="text-sm font-medium text-[var(--success)]">Ready</span>
+              </div>
+
+              <button
+                onClick={handleRemove}
+                className="p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-all"
+                title="Remove file"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="mt-4 p-4 rounded-xl bg-[var(--error-bg)] border border-[var(--error)]/20 flex items-start gap-3"
+          >
+            <div className="w-5 h-5 rounded-full bg-[var(--error)] flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span className="text-white text-xs font-bold">!</span>
+            </div>
+            <p className="text-[var(--error)] text-sm">{error}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

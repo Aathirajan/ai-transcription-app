@@ -7,12 +7,16 @@ import { Providers } from "@/components/Providers";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#FAFAF8",
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://freetranscriptai.com'),
-  title: 'Free AI Transcript Generator | Convert Audio/Video to Text',
-  description: 'Generate AI-powered transcripts for free. Convert audio and video to text instantly. Supports MP4, MP3, WAV, MOV, M4A and YouTube links.',
+  title: {
+    default: 'FreeTranscriptAI — Transform Audio to Text',
+    template: '%s | FreeTranscriptAI'
+  },
+  description: 'Transform any audio or video into accurate text transcripts. Upload files or paste YouTube links. Free, instant, and powered by AI.',
   keywords: [
     'free transcript generator',
     'free ai transcription',
@@ -24,26 +28,28 @@ export const metadata: Metadata = {
     'transcribe audio',
     'podcast transcription',
   ],
+  authors: [{ name: 'FreeTranscriptAI' }],
+  creator: 'FreeTranscriptAI',
   openGraph: {
-    title: 'FreeTranscriptAI - Free AI Transcript Generator',
-    description: 'Generate AI-powered transcripts for free. Convert audio and video to text instantly.',
+    title: 'FreeTranscriptAI — Transform Audio to Text',
+    description: 'Transform any audio or video into accurate text transcripts. Upload files or paste YouTube links.',
     url: 'https://freetranscriptai.com',
     siteName: 'FreeTranscriptAI',
+    type: 'website',
+    locale: 'en_US',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'FreeTranscriptAI - Free AI Transcript Generator',
+        alt: 'FreeTranscriptAI — Transform Audio to Text',
       },
     ],
-    locale: 'en_US',
-    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FreeTranscriptAI - Free AI Transcript Generator',
-    description: 'Generate AI-powered transcripts for free. Convert audio and video to text instantly.',
+    title: 'FreeTranscriptAI — Transform Audio to Text',
+    description: 'Transform any audio or video into accurate text transcripts.',
     images: ['/og-image.png'],
   },
   robots: {
@@ -65,8 +71,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased">
+    <html lang="en" className="scroll-smooth">
+      <body className="antialiased bg-[var(--bg-primary)] text-[var(--text-primary)]">
         <Providers>
           <Navbar />
           <main className="min-h-screen">

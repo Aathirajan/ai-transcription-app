@@ -1,6 +1,6 @@
-import { developmentConfig } from './development';
-import { stagingConfig } from './staging';
-import { productionConfig } from './production';
+import { config as developmentConfig } from './development';
+import { config as stagingConfig } from './staging';
+import { config as productionConfig } from './production';
 
 // Environment-aware config export
 const env = process.env.NODE_ENV || 'development';

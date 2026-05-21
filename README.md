@@ -1,36 +1,159 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FreeTranscriptAI
+
+A free, ad-supported AI-powered transcription tool for audio/video files and YouTube links.
+
+## Features
+
+- **Multiple Input Methods**: Upload audio/video files or paste YouTube links
+- **AI-Powered Transcription**: Uses Deepgram for accurate speech-to-text
+- **YouTube Support**: Extract transcripts directly from YouTube videos
+- **Export Options**: Download as TXT or SRT (subtitles) format
+- **Ad-Supported**: Free to use with advertisements
+- **User Accounts**: Sign up to save transcripts and access premium features
+- **Stripe Integration**: Upgrade to premium for ad-free experience
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Styling**: Tailwind CSS v4
+- **Authentication**: NextAuth.js with Prisma adapter
+- **Database**: Prisma with SQLite (dev) / PostgreSQL (prod)
+- **Transcription**: Deepgram SDK
+- **YouTube**: yt-dlp + ytdl-core
+- **Payments**: Stripe
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Error Tracking**: Sentry
+- **Logging**: Pino
+- **Rate Limiting**: rate-limiter-flexible
+- **Testing**: Vitest
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm/yarn/pnpm/bun
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd p1-transcript-app
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env
+
+# Initialize the database
+npx prisma db push
+
+# Run the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env` file with the following variables:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+# Database
+DATABASE_URL="file:./dev.db"
 
-## Learn More
+# NextAuth
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key"
 
-To learn more about Next.js, take a look at the following resources:
+# Deepgram (for transcription)
+DEEPGRAM_API_KEY="your-deepgram-api-key"
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Stripe (for payments)
+STRIPE_SECRET_KEY="your-stripe-secret-key"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="your-stripe-publishable-key"
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# YouTube
+YTDLP_PATH="path-to-yt-dlp"
 
-## Deploy on Vercel
+# Sentry (optional)
+SENTRY_DSN="your-sentry-dsn"
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── api/               # API routes
+│   │   ├── auth/          # NextAuth endpoints
+│   │   ├── stripe/       # Stripe checkout
+│   │   └── transcripts/  # Transcript processing
+│   ├── processing/       # Processing page
+│   ├── result/           # Result page
+│   ├── privacy/          # Privacy policy
+│   ├── terms/            # Terms of service
+│   └── cookies/          # Cookie policy
+├── components/           # React components
+│   ├── FileUpload.tsx
+│   ├── YouTubeInput.tsx
+│   ├── ProcessingScreen.tsx
+│   ├── TranscriptOutput.tsx
+│   ├── ExportOptions.tsx
+│   ├── Navbar.tsx
+│   ├── Footer.tsx
+│   └── ...
+├── lib/                   # Utility functions
+│   ├── utils.ts
+│   ├── auth.ts
+│   ├── prisma.ts
+│   └── logger.ts
+└── types/                 # TypeScript types
+```
+
+## Available Scripts
+
+```bash
+npm run dev       # Start development server
+npm run build     # Build for production
+npm run start     # Start production server
+npm run lint      # Run ESLint
+npm run test      # Run tests
+npm run test:run  # Run tests once
+```
+
+## Supported File Formats
+
+- MP4
+- MP3
+- WAV
+- MOV
+- M4A
+
+Maximum file size: 500MB
+
+## Pages
+
+- **/** - Landing page with upload/YouTube input
+- **/processing** - Shows transcription progress with ads
+- **/result** - Display transcript with export options
+- **/privacy** - Privacy policy
+- **/terms** - Terms of service
+- **/cookies** - Cookie policy
+- **/contact** - Contact page
+
+## Deployment
+
+This app is optimized for deployment on Vercel:
+
+1. Push to GitHub
+2. Import project on Vercel
+3. Configure environment variables
+4. Deploy
+
+## License
+
+MIT

@@ -14,7 +14,6 @@ export default function TranscriptOutput({ transcript: initialTranscript }: Tran
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    // Generate sample transcript if none provided
     if (!transcript) {
       setTranscript(generateSampleTranscript());
     }
@@ -34,25 +33,27 @@ export default function TranscriptOutput({ transcript: initialTranscript }: Tran
   return (
     <div className="card overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b border-[#2A2A3E] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 border-b border-[var(--border-light)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#E94560]/20 flex items-center justify-center">
-            <FileText className="w-5 h-5 text-[#E94560]" />
+          <div className="w-10 h-10 rounded-xl bg-[var(--accent-light)] flex items-center justify-center">
+            <FileText className="w-5 h-5 text-[var(--accent-primary)]" />
           </div>
           <div>
-            <h3 className="text-white font-medium">Your Transcript</h3>
-            <p className="text-sm text-[#A0A0B0]">
-              {wordCount} words • {charCount} characters
+            <h3 className="text-[var(--text-primary)] font-medium">Your Transcript</h3>
+            <p className="text-sm text-[var(--text-tertiary)]">
+              {wordCount.toLocaleString()} words • {charCount.toLocaleString()} characters
             </p>
           </div>
         </div>
 
-        <button
+        <motion.button
           onClick={handleCopy}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${
             copied
-              ? 'bg-[#00D9A5]/20 text-[#00D9A5]'
-              : 'bg-[#1A1A2E] text-white hover:bg-[#2A2A3E]'
+              ? 'bg-[var(--success-bg)] text-[var(--success)]'
+              : 'bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]'
           }`}
         >
           {copied ? (
@@ -66,18 +67,18 @@ export default function TranscriptOutput({ transcript: initialTranscript }: Tran
               Copy
             </>
           )}
-        </button>
+        </motion.button>
       </div>
 
       {/* Transcript Content */}
-      <div className="p-6 max-h-[500px] overflow-y-auto">
+      <div className="p-5 sm:p-6 max-h-[500px] overflow-y-auto">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="prose prose-invert max-w-none"
+          className="prose max-w-none"
         >
           {transcript.split('\n').map((paragraph, index) => (
-            <p key={index} className="text-[#A0A0B0] leading-relaxed mb-4 last:mb-0">
+            <p key={index} className="text-[var(--text-secondary)] leading-relaxed mb-4 last:mb-0">
               {paragraph}
             </p>
           ))}
@@ -85,18 +86,18 @@ export default function TranscriptOutput({ transcript: initialTranscript }: Tran
       </div>
 
       {/* Stats Footer */}
-      <div className="p-4 border-t border-[#2A2A3E] flex flex-wrap gap-4">
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#1A1A2E]">
-          <FileText className="w-4 h-4 text-[#E94560]" />
-          <span className="text-sm text-[#A0A0B0]">{wordCount} words</span>
+      <div className="p-4 sm:p-5 border-t border-[var(--border-light)] flex flex-wrap gap-3">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--bg-secondary)]">
+          <FileText className="w-4 h-4 text-[var(--accent-primary)]" />
+          <span className="text-sm text-[var(--text-secondary)]">{wordCount.toLocaleString()} words</span>
         </div>
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#1A1A2E]">
-          <Hash className="w-4 h-4 text-[#E94560]" />
-          <span className="text-sm text-[#A0A0B0]">{charCount} chars</span>
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--bg-secondary)]">
+          <Hash className="w-4 h-4 text-[var(--accent-primary)]" />
+          <span className="text-sm text-[var(--text-secondary)]">{charCount.toLocaleString()} chars</span>
         </div>
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#1A1A2E]">
-          <Clock className="w-4 h-4 text-[#E94560]" />
-          <span className="text-sm text-[#A0A0B0]">~{Math.ceil(wordCount / 150)} min read</span>
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--bg-secondary)]">
+          <Clock className="w-4 h-4 text-[var(--accent-primary)]" />
+          <span className="text-sm text-[var(--text-secondary)]">~{Math.ceil(wordCount / 150)} min read</span>
         </div>
       </div>
     </div>

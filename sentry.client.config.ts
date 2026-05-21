@@ -24,8 +24,11 @@ Sentry.init({
   beforeSend(event, hint) {
     // Filter out 404s for static assets
     const error = hint.originalException;
-    if (error && error.message && error.message.includes("404")) {
-      return null;
+    if (error && typeof error === 'object' && 'message' in error) {
+      const errorMessage = (error as { message: string }).message;
+      if (errorMessage.includes("404")) {
+        return null;
+      }
     }
     return event;
   },

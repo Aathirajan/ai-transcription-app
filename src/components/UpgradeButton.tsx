@@ -2,6 +2,8 @@
 
 import { loadStripe } from '@stripe/stripe-js';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Zap, Loader2 } from 'lucide-react';
 
 interface UpgradeButtonProps {
   priceId?: string;
@@ -37,12 +39,24 @@ export default function UpgradeButton({ priceId, className = '' }: UpgradeButton
   };
 
   return (
-    <button
+    <motion.button
       onClick={handleUpgrade}
       disabled={loading}
-      className={`py-3 px-6 rounded-xl bg-gradient-to-r from-[#E94560] to-[#FF6B6B] text-white font-semibold hover:shadow-lg hover:shadow-[#E94560]/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={`btn btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed ${className}`}
+      whileHover={{ scale: loading ? 1 : 1.02 }}
+      whileTap={{ scale: loading ? 1 : 0.98 }}
     >
-      {loading ? 'Processing...' : 'Upgrade to Pro - $9.99/mo'}
-    </button>
+      {loading ? (
+        <>
+          <Loader2 className="w-5 h-5 animate-spin" />
+          Processing...
+        </>
+      ) : (
+        <>
+          <Zap className="w-5 h-5" />
+          Upgrade to Pro — $9.99/mo
+        </>
+      )}
+    </motion.button>
   );
 }
